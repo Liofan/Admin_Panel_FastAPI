@@ -2,12 +2,12 @@ from fastapi import APIRouter, HTTPException
 from sqlmodel import Session, select
 from db.base import engine
 from db.product import Product, Tara
-from schema.product import ProductReadWithTeam
+
 
 router = APIRouter()
 
 
-@router.get('/products', response_model=ProductReadWithTeam, name="Список продукции", tags=["Продукция"])
+@router.get('/products', name="Список продукции", tags=["Продукция"])
 async def products_list(limit: int = 100, skip: int = 0):
     with Session(engine) as session:
         statement = select(Product, Tara).join(Tara).limit(limit).offset(skip)

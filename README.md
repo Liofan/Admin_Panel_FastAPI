@@ -38,6 +38,13 @@ python -m venv venv
 pip install -r requirements.txt
 ```
 
+Создайте файл .env и добавьте ссылку на БД
+
+```sh
+DATABASE_URl_PSQL = postgresql://login:password@localhost:port/db
+```
+
+
 Запустите проект
 
 ```sh

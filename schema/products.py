@@ -15,7 +15,3 @@ class ProductRead(Product):
 
 
 
-
-class ProductReadWithTeam(TaraRead):
-    tara: Optional[ProductRead] = None
-
