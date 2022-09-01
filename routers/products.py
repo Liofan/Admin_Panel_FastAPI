@@ -49,13 +49,10 @@ async def add_products(name: str, img: str, tara: str, country: str):
 async def update_heroes(products_id: int, name: str, img: str, tara: str, country: str):
     with Session(engine) as session:
         query = select(Product).where(Product.id == products_id)
-        results = session.exec(query)
-        products = results.one()
-        print("products:", products)
+        products = session.exec(query).first()
 
         query = select(Tara).where(Tara.id == products_id)
-        results_tara = session.exec(query)
-        tara_db = results_tara.one()
+        tara_db = session.exec(query).first()
 
         tara_db.name = tara
 
@@ -88,8 +85,6 @@ async def remove_products(tara_id: int):
         remove_products = session.get(Product, tara_id)
         if not remove_products:
             raise HTTPException(status_code=404, detail="Продукция с данным ID не найдена")
-        remove_tara = session.get(Tara, tara_id)
         session.delete(remove_products)
-        session.delete(remove_tara)
         session.commit()
         return {"ok": True}

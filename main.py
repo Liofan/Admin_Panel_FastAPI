@@ -1,13 +1,15 @@
 from fastapi import FastAPI, HTTPException
 import uvicorn
 from db.base import engine
-from routers import products, taras
+from routers import products, taras, codes, country
 
-app = FastAPI(title="Админ Панель", debug=True)
+app = FastAPI(title="API для воды", debug=True, version='0.1')
 
 # Подлючение роутов
 app.include_router(products.router, prefix="/products", tags=["Продукция"])
 app.include_router(taras.router, prefix="/tara", tags=["Тара"])
+app.include_router(country.router, prefix="/country", tags=["Страны"])
+app.include_router(codes.router, prefix="/code", tags=["Потребительские Коды"])
 
 
 
