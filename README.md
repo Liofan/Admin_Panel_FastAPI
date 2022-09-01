@@ -1,6 +1,4 @@
-# Admin Panel FastAPI
-
-## _The Last Markdown Editor, Ever_
+# API для воды
 
 
 [![Build Status](https://travis-ci.org/joemccann/dillinger.svg?branch=master)](https://travis-ci.org/joemccann/dillinger)
