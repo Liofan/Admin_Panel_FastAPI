@@ -9,6 +9,9 @@ router = APIRouter()
 
 @router.get('', response_model=List[Schema_Country_Read], name="Список стран")
 async def get_taras():
+    """
+    Вывод всех стран
+    """
     with Session(engine) as session:
         country = select(Country)
         return session.exec(country).all()
@@ -16,6 +19,11 @@ async def get_taras():
 
 @router.post('/add', name='Добавление Страны')
 async def add_country(country: str):
+    """
+    Метод добавления страны
+    Входящие параметры: Название страны
+    Вывод: Добавленный обьект
+    """
     with Session(engine) as session:
         country = Country(name = country)
         session.add(country)

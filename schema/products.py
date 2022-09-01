@@ -2,7 +2,8 @@ import datetime
 from typing import List, Optional
 from pydantic import BaseModel, Field
 
-from schema.taras import TaraRead
+from .country import CountryRead
+from .taras import TaraRead
 
 
 class Product(BaseModel):
@@ -10,8 +11,9 @@ class Product(BaseModel):
     name: str
     img: str
 
+    class Config:
+        orm_mode = True
+
 class ProductRead(Product):
-    id: int
-
-
-
+    country: List[CountryRead] = []
+    country: List[TaraRead] = []
