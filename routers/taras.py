@@ -3,12 +3,12 @@ from typing import List
 from fastapi import APIRouter, HTTPException
 from sqlmodel import Session, select
 from db.base import engine
-from db.product import Tara
+from db.product import Tara, Country
 from schema.taras import TaraRead
 
 router = APIRouter()
 
-@router.get('/tara', response_model=List[TaraRead], name="Получить все тары", tags=["Тара"])
+@router.get('', response_model=List[TaraRead], name="Список тар")
 async def get_tara():
     with Session(engine) as session:
         tara = select(Tara)
@@ -16,11 +16,10 @@ async def get_tara():
         tara_all = result.all()
     return tara_all
 
-@router.get('/tara/{volume}', response_model=List[TaraRead] , name="Получить тару", tags=["Тара"])
-async def get_tara(volume: str):
+@router.get('/{country}', name="Получить тару по Стране")
+async def get_products(country: str):
     with Session(engine) as session:
-        tara = select(Tara).where(Tara.name == volume)
-        result = session.exec(tara)
-        tara_one = result.all()
-    return tara_one
+        statement = select(Tara, Country).join(Country).where(Country.name == country)
+        results = session.exec(statement).all()
+        return results
 

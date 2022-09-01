@@ -6,8 +6,8 @@ from routers import products, taras
 app = FastAPI(title="Админ Панель", debug=True)
 
 # Подлючение роутов
-app.include_router(products.router)
-app.include_router(taras.router)
+app.include_router(products.router, prefix="/products", tags=["Продукция"])
+app.include_router(taras.router, prefix="/tara", tags=["Тара"])
 
 
 
