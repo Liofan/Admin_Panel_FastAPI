@@ -1,4 +1,4 @@
-from typing import List, Optional, Dict
+from typing import List, Optional, Dict, Union
 from pydantic import BaseModel, Field
 from .products import Product
 from .country import Country
@@ -11,11 +11,13 @@ class Codes(BaseModel):
     class Config:
         orm_mode = True
 
-class CodesRead(Codes):
-    code: str
+class CodesRead(BaseModel):
+    code: Codes
+    product: Union[Product, List[Product]]
+    country: Union[Country, List[Country]]
 
-    product: Product
-    country: Country
+    class Config:
+        orm_mode = True
 
 
 
