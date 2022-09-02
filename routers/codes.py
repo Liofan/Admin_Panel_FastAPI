@@ -7,6 +7,7 @@ from db.code import Code
 from schema.codes import CodesRead as Schema_Codes_Read
 from schema.codes import CodesAdd as Schema_Codes_Add
 from schema.codes import CodesUpdate as Schema_Codes_Update
+from schema.codes import CodesAdd_and_Read as Schema_CodesAdd_and_Read
 
 
 router = APIRouter()
@@ -26,15 +27,15 @@ async def get_cod(code: str):
         return all_codes
 
 @router.post('/add', name='Добавление кодов', status_code=200)
-async def add_codes(codes: str, country: str, product: str):
+async def add_codes(add: Schema_Codes_Add):
     with Session(engine) as session:
-        country_db = select(Country).where(Country.name == country)
+        country_db = select(Country).where(Country.name == add.country)
         country_db = session.exec(country_db).first()
-        product_db = select(Product).where(Product.name == product)
+        product_db = select(Product).where(Product.name == add.product)
         product_db = session.exec(product_db).first()
 
 
-        code = Code(code=codes, country_id=country_db.id, product_id=product_db.id)
+        code = Code(code=add.codes, country_id=country_db.id, product_id=product_db.id)
         session.add(code)
         session.commit()
         session.refresh(code)

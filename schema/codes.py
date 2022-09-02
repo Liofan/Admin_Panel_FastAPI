@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from datetime import datetime
 from .products import Product
 from .country import Country
 
@@ -22,6 +23,15 @@ class CodesAdd(BaseModel):
     codes: str
     country: str
     product: str
+    class Config:
+        orm_mode = True
+
+class CodesAdd_and_Read(BaseModel):
+    id: int
+    code: str
+    updated_at: datetime
+    country_id: str
+    product_id: str
     class Config:
         orm_mode = True
 
