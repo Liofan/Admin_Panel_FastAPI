@@ -1,9 +1,21 @@
 from starlette.config import Config
+from fastapi_users.authentication import CookieTransport
+from fastapi_users.authentication import AuthenticationBackend, BearerTransport, JWTStrategy
+
 
 config = Config(".env")
 
 DATABASE_URL = config("DATABASE_URl_PSQL", cast=str, default="")
 
-ACCESS_TOKEN_EXPIRE_MINUTES = 60
-ALGORITHM = "HS256"
-SECRET_KEY = config("EE_SECRET_KEY", cast=str, default="2b2d197649061838c0c381612cb117d5f562ff181f2ed68c7847471af22f83ce")
+cookie_transport = CookieTransport(cookie_max_age=3600)
+SECRET = "SECRET"
+bearer_transport = BearerTransport(tokenUrl="auth/jwt/login")
+
+def get_jwt_strategy() -> JWTStrategy:
+    return JWTStrategy(secret=SECRET, lifetime_seconds=3600)
+
+auth_backend = AuthenticationBackend(
+    name="jwt",
+    transport=bearer_transport,
+    get_strategy=get_jwt_strategy,
+)

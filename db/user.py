@@ -1,17 +1,17 @@
-from typing import Optional, List
-from sqlmodel import Field, SQLModel
 import datetime
 
+from fastapi import Depends
+
+from fastapi_users_db_sqlmodel import SQLModelBaseUserDB, SQLModelUserDatabase
+from sqlmodel import SQLModel, Session
+
+from core.create_session import get_session
 
 
-class User(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
-    name: str = Field(index=True)
-    email: str = Field(primary_key=True, unique=True)
-    hashed_password: str
+class User(SQLModelBaseUserDB, SQLModel, table=True):
+    name: str
     created_at: str = datetime.datetime.utcnow()
     updated_at: str = datetime.datetime.utcnow()
 
-
-
-
+async def get_user_db(*, session: Session = Depends(get_session)):
+    yield SQLModelUserDatabase(session, User)
