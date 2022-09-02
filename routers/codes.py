@@ -7,7 +7,6 @@ from db.code import Code
 from schema.codes import CodesRead as Schema_Codes_Read
 from schema.codes import CodesAdd as Schema_Codes_Add
 from schema.codes import CodesUpdate as Schema_Codes_Update
-from schema.codes import CodesAdd_and_Read as Schema_CodesAdd_and_Read
 
 
 router = APIRouter()
@@ -40,6 +39,7 @@ async def add_codes(add: Schema_Codes_Add):
         session.commit()
         session.refresh(code)
         return code
+
 
 @router.put('{id_code}', name='Обновить код по ID', status_code=200)
 async def update_codes(id_codes: int, codes: str, country: str, product: str) -> list:
