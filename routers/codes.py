@@ -5,24 +5,27 @@ from db.base import engine
 from db.product import Product, Country
 from db.code import Code
 from schema.codes import CodesRead as Schema_Codes_Read
+from schema.codes import CodesAdd as Schema_Codes_Add
+from schema.codes import CodesUpdate as Schema_Codes_Update
+
 
 router = APIRouter()
 
-@router.get('', name='Список кодов')
-async def get_codes(limit: int = 100, skip: int = 0):
+@router.get('', name='Список кодов', status_code=200, response_model=List[Schema_Codes_Read])
+async def get_codes(limit: int = 100, skip: int = 0) -> list:
     with Session(engine) as session:
         codes = select(Code, Product, Country).join(Country, Country.id == Code.country_id).join(Product, Product.id == Code.product_id).limit(limit).offset(skip)
         all_codes = session.exec(codes).all()
         return all_codes
 
-@router.get('/{code}', name='Получить информацию по коду')
+@router.get('/{code}', name='Получить информацию по коду', status_code=200, response_model=Schema_Codes_Read)
 async def get_cod(code: str):
     with Session(engine) as session:
         codes = select(Code, Product, Country).join(Country, Country.id == Code.country_id).join(Product, Product.id == Code.product_id).where(Code.code == code)
         all_codes = session.exec(codes).first()
         return all_codes
 
-@router.post('/add', name='Добавление кодов')
+@router.post('/add', name='Добавление кодов', status_code=200)
 async def add_codes(codes: str, country: str, product: str):
     with Session(engine) as session:
         country_db = select(Country).where(Country.name == country)
@@ -37,8 +40,8 @@ async def add_codes(codes: str, country: str, product: str):
         session.refresh(code)
         return code
 
-@router.put('{id_code}', name='Обновить код по ID')
-async def update_codes(id_codes: int, codes: str, country: str, product: str):
+@router.put('{id_code}', name='Обновить код по ID', status_code=200)
+async def update_codes(id_codes: int, codes: str, country: str, product: str) -> list:
     with Session(engine) as session:
         codes_db = select(Code).where(Code.id == id_codes)
         codes_db = session.exec(codes_db).first()
