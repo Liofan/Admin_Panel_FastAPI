@@ -6,7 +6,7 @@ def get_session():
     with Session(engine) as session:
         yield session
 
-def add_commit_refresh(session, elem):
-    session.add(elem)
+def add_commit_refresh(session, query):
+    session.add(query)
     session.commit()
-    session.refresh(elem)
+    session.refresh(query)

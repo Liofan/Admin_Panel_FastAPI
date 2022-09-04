@@ -10,7 +10,8 @@ from fastapi_users.authentication import (
 )
 
 from fastapi_users_db_sqlmodel import  SQLModelUserDatabase
-from db.user import *
+from db.user import User, get_user_db
+
 SECRET = "SECRET"
 
 
