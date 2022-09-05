@@ -1,12 +1,8 @@
 import datetime
-
 from fastapi import Depends
-
 from fastapi_users_db_sqlmodel import SQLModelBaseUserDB, SQLModelUserDatabase
 from sqlmodel import SQLModel, Session
-
 from core.create_session import get_session
-
 
 class User(SQLModelBaseUserDB, SQLModel, table=True):
     name: str

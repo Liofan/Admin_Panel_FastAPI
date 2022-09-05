@@ -10,6 +10,8 @@ class Korob(BaseModel):
     id: int
     code: str
     country_id: int
+    created_at: str = datetime
+    updated_at: str = datetime
 
     class Config:
         orm_mode = True
@@ -21,6 +23,12 @@ class Korob_codes(BaseModel):
     created_at: str = datetime
     updated_at: str = datetime
 
+    class Config:
+        orm_mode = True
+
+class Read_korob_Codes(BaseModel):
+    korob: Korob
+    codes: Korob_codes
     class Config:
         orm_mode = True
 

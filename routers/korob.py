@@ -5,12 +5,12 @@ from core.create_session import get_session, add_commit_refresh
 from db.base import engine
 from db.product import Product, Country
 from db.korob import Korob, Korob_codes
-from schema.korob import Korob_codes as Schema_Korob_codes
+from schema.korob import Read_korob_Codes as Schema_Korob_codes
 router = APIRouter()
 
 @router.get('', name='Список ящиков', status_code=200)
 async def get_codes(*, session: Session = Depends(get_session), limit: int = 100, skip: int = 0) -> list:
-    box = select(Korob, Korob_codes).limit(limit).offset(skip)
+    box = select(Korob, Korob_codes).join(Korob_codes, Korob_codes.korob_id == Korob.id).limit(limit).offset(skip)
     return session.exec(box).all()
 
 @router.get('/{code}', name='Получить информацию по коду', status_code=200)

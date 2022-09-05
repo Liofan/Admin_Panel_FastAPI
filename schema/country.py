@@ -10,3 +10,9 @@ class Country(BaseModel):
 
 class CountryRead(Country):
     pass
+
+class CountryAdd(BaseModel):
+    name: str
+
+class CountryRemove(BaseModel):
+    output: str
