@@ -6,17 +6,18 @@ import datetime
 class Tara(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     name: str = Field(index=True)
-    country_id: Optional[int] = Field(default=None, foreign_key="country.id")
+    country_id: Optional[int] = Field(default=None,  foreign_key="country.id")
 
 class Country(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    name: str = Field(index=True)
+    name: str = Field(index=True, unique=True)
 
 class Product(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     name: str = Field(index=True)
-    gtin: str
     img: str
+    gtin: str = Field(index=True, unique=True)
+    korob: int
     created_at: str = datetime.datetime.utcnow()
     updated_at: str = datetime.datetime.utcnow()
     tara_id: Optional[int] = Field(default=None, foreign_key="tara.id")

@@ -7,24 +7,28 @@ from schema.taras import TaraRead
 
 router = APIRouter()
 
-@router.get('', response_model=List[TaraRead], name="Список тар")
+@router.get('' , name="Список тар")
 async def get_taras():
     with Session(engine) as session:
-        tara = select(Tara)
-        return session.exec(tara).all()
+        tara = select(Tara, Country).join(Country ,Country.id == Tara.country_id)
+        res = session.exec(tara).all()
+        return res
 
 
 @router.get('/{country}', name="Получить тару по Стране")
-async def get_taras_by_country(country: str):
+async def get_taras_by_country(country: str) -> List[TaraRead]:
     with Session(engine) as session:
         query = select(Tara, Country).join(Country).where(Country.name == country)
-        return session.exec(query).first()
+        res = session.exec(query).all()
+        return res
 
-@router.post('/add', name='Добавление Тары')
+@router.post('/add',  name='Добавление Тары')
 async def add_taras(tara: str, country: str):
     with Session(engine) as session:
         query = select(Country).where(Country.name == country)
         country_db = session.exec(query).first()
+        if not country_db:
+            raise HTTPException(status_code=404, detail="Данной страны нет в Базе Данных")
         tara = Tara(name = tara, country_id = country_db.id)
         session.add(tara)
         session.commit()

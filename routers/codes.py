@@ -12,14 +12,14 @@ from schema.codes import CodesUpdate as Schema_Codes_Update
 router = APIRouter()
 
 @router.get('', name='Список кодов', status_code=200, response_model=List[Schema_Codes_Read])
-async def get_codes(limit: int = 100, skip: int = 0) -> list:
+async def get_codes(limit: int = 100, skip: int = 0) -> List[Schema_Codes_Read]:
     with Session(engine) as session:
         codes = select(Code, Product, Country).join(Country, Country.id == Code.country_id).join(Product, Product.id == Code.product_id).limit(limit).offset(skip)
         all_codes = session.exec(codes).all()
         return all_codes
 
 @router.get('/{code}', name='Получить информацию по коду', status_code=200, response_model=Schema_Codes_Read)
-async def get_cod(code: str):
+async def get_cod(code: str) -> Schema_Codes_Read:
     with Session(engine) as session:
         codes = select(Code, Product, Country).join(Country, Country.id == Code.country_id).join(Product, Product.id == Code.product_id).where(Code.code == code)
         all_codes = session.exec(codes).first()
@@ -41,7 +41,7 @@ async def add_codes(add: Schema_Codes_Add):
         return code
 
 
-@router.put('{id_code}', name='Обновить код по ID', status_code=200)
+@router.put('/{id_code}', name='Обновить код по ID', status_code=200)
 async def update_codes(id_codes: int, codes: str, country: str, product: str) -> list:
     with Session(engine) as session:
         codes_db = select(Code).where(Code.id == id_codes)
@@ -61,7 +61,7 @@ async def update_codes(id_codes: int, codes: str, country: str, product: str) ->
         session.refresh(codes_db)
         return codes_db
 
-@router.delete('{id_code}', name='Удалить код по ID')
+@router.delete('/{id_code}', name='Удалить код по ID')
 async def remove_code(id_code: int):
     with Session(engine) as session:
         query = select(Code).where(Code.id == id_code)

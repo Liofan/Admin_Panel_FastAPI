@@ -16,63 +16,63 @@ async def products_list(limit: int = 100, skip: int = 0):
         print(results)
         return results
 
-
+# До думать
 @router.get('/tara/{volume}', name="Получить продукцию по таре")
 async def get_products(volume: str):
     with Session(engine) as session:
         statement = select(Product, Tara).join(Tara).where(Tara.name == volume)
-        results = session.exec(statement).all()
-        return results
+        results = session.exec(statement).first()
+        count = select(Country).where(Country.id == results.Tara.country_id)
+        count = session.exec(count).first()
+        return results, count
 
 
 @router.post('/add', name="Добавить продукцию")
-async def add_products(name: str, gtin: str, img: str, tara: str, country: str):
+async def add_products(name: str, gtin: str, korob: int, img: str, tara: str, country: str):
     with Session(engine) as session:
         country_db = select(Country).where(Country.name == country)
         country_db = session.exec(country_db).first()
-
+        if not country_db:
+            raise HTTPException(status_code=404, detail="Данной страны нет в Базе Данных")
         tara_db = select(Tara).where(Tara.name == tara)
         tara_db = session.exec(tara_db).first()
+        if not country_db:
+            raise HTTPException(status_code=404, detail="Данной тары нет в Базе Данных")
 
-        product = Product(name=name, gtin=gtin, img=img, tara_id=tara_db.id, country_id=country_db.id)
+        product = Product(name=name, gtin=gtin, korob=korob, img=img, tara_id=tara_db.id, country_id=country_db.id)
         session.add(product)
         session.commit()
-
         session.refresh(product)
+
         return product
 
 
 @router.put('/{products_id}', name="Обновить продукцию по ID")
-async def update_heroes(products_id: int, name: str, img: str, tara: str, country: str):
+async def update_heroes(products_id: int, name: str, gtin: str, img: str, tara: str, country: str):
     with Session(engine) as session:
         query = select(Product).where(Product.id == products_id)
         products = session.exec(query).first()
+        if not products:
+            raise HTTPException(status_code=404, detail="Продукция с данным ID не найдена")
+        country_db = select(Country).where(Country.name == country)
+        country_db = session.exec(country_db).first()
+        if not country_db:
+            raise HTTPException(status_code=404, detail="Данной страны нет в Базе Данных")
 
-        query = select(Tara).where(Tara.id == products_id)
-        tara_db = session.exec(query).first()
-
-        tara_db.name = tara
-
-        session.add(tara_db)
-        session.commit()
-        session.refresh(tara_db)
-
-        query = select(Country).where(Country.id == products_id)
-        results_tara = session.exec(query)
-        country_db = results_tara.one()
-
-        country_db.name = country
-
-        session.add(country_db)
-        session.commit()
-        session.refresh(country_db)
+        tara_db = select(Tara).where(Tara.name == tara)
+        tara_db = session.exec(tara_db).first()
+        if not country_db:
+            raise HTTPException(status_code=404, detail="Данной тары нет в Базе Данных")
 
         products.name = name
         products.img = img
+        products.gtin = gtin
         products.tara_id = tara_db.id
+        products.country_id = country_db.id
         session.add(products)
         session.commit()
         session.refresh(products)
+
         return products
 
 
