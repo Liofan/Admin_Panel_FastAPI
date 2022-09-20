@@ -9,7 +9,9 @@ router = APIRouter()
 @router.get('', name="Список продукции")
 async def products_list(limit: int = 100, skip: int = 0):
     with Session(engine) as session:
-        statement = select(Product, Tara, Country).join(Tara, Tara.id == Product.tara_id).join(Country, Country.id == Product.country_id).limit(limit).offset(skip)
+        statement = select(Product, Tara, Country).join(Tara, Tara.id == Product.tara_id).join(Country,
+                                                                                               Country.id == Product.country_id).limit(
+            limit).offset(skip)
         results = session.exec(statement).all()
         print(results)
         return results
@@ -23,21 +25,16 @@ async def get_products(volume: str):
         return results
 
 
-
 @router.post('/add', name="Добавить продукцию")
-async def add_products(name: str, img: str, tara: str, country: str):
+async def add_products(name: str, gtin: str, img: str, tara: str, country: str):
     with Session(engine) as session:
-        country = Country(name=country)
-        session.add(country)
-        session.commit()
-        session.refresh(country)
+        country_db = select(Country).where(Country.name == country)
+        country_db = session.exec(country_db).first()
 
-        tara = Tara(name=tara, country_id=country.id)
-        session.add(tara)
-        session.commit()
-        session.refresh(tara)
+        tara_db = select(Tara).where(Tara.name == tara)
+        tara_db = session.exec(tara_db).first()
 
-        product = Product(name=name, img=img, tara_id=tara.id, country_id=country.id)
+        product = Product(name=name, gtin=gtin, img=img, tara_id=tara_db.id, country_id=country_db.id)
         session.add(product)
         session.commit()
 

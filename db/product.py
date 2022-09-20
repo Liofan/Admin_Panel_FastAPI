@@ -15,12 +15,9 @@ class Country(SQLModel, table=True):
 class Product(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     name: str = Field(index=True)
+    gtin: str
     img: str
     created_at: str = datetime.datetime.utcnow()
     updated_at: str = datetime.datetime.utcnow()
     tara_id: Optional[int] = Field(default=None, foreign_key="tara.id")
     country_id: Optional[int] = Field(default=None, foreign_key="country.id")
-
-
-
-

@@ -30,7 +30,7 @@ async def add_codes(add: Schema_Codes_Add):
     with Session(engine) as session:
         country_db = select(Country).where(Country.name == add.country)
         country_db = session.exec(country_db).first()
-        product_db = select(Product).where(Product.name == add.product)
+        product_db = select(Product).where(Product.gtin == add.gtin)
         product_db = session.exec(product_db).first()
 
 

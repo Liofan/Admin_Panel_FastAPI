@@ -6,6 +6,8 @@ from .product import Product, Country
 class Code(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     code: str = Field(index=True)
+    aggr: bool = False
+    nanes: bool = False
     created_at: str = datetime.datetime.utcnow()
     updated_at: str = datetime.datetime.utcnow()
     product_id: Optional[int] = Field(default=None, foreign_key="product.id")
