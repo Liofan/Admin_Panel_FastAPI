@@ -13,6 +13,7 @@ app.include_router(codes.router, prefix="/code", tags=["Потребительс
 app.include_router(users.router, prefix="/user", tags=["Пользователи"])
 
 
+
 @app.on_event("startup")
 async def startup():
     engine.connect()
