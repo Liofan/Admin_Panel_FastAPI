@@ -35,6 +35,7 @@ app.include_router(codes.router, prefix="/code", tags=["Потребительс
 app.include_router(korob.router, prefix="/korob", tags=["Ящики"])
 
 
+
 @app.on_event("startup")
 async def startup():
     engine.connect()

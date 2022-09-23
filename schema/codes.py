@@ -21,7 +21,7 @@ class CodesRead(BaseModel):
 class CodesAdd(BaseModel):
     codes: str
     country: str
-    product: str
+    gtin: str
     class Config:
         orm_mode = True
 
